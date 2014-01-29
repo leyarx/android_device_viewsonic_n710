@@ -1,6 +1,7 @@
 #
 # system.prop for n710
 #
+ro.build.selinux=0
 ro.opengles.version = 131072
 wifi.interface=wlan0
 ap.interface=wlan1

@@ -80,6 +80,19 @@ etc/nvcamera.conf
 lib/hw/camera.tegra.so
 
 # GPS/AGPS
+bin/navd
+etc/gps/cert/auto_hslp_keystore.bks
+etc/gps/config/GPSCConfigFile.cfg
+etc/gps/config/GpsConfigFile.txt
+etc/gps/config/inavconfigfile.txt
+etc/gps/config/pathconfigfile.txt
+etc/gps/config/PeriodicConfFile.cfg
+etc/gps/config/SuplConfig.spl
+etc/gps/patch/patch-X.0.ce
+lib/libgps.so
+lib/libgpsservices.so
+lib/libmcphalgps.so
+lib/libsupllocationprovider.so
 lib/hw/gps.tegra.so
 
 # NFC

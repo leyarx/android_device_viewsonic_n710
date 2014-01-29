@@ -64,8 +64,9 @@ TARGET_PREBUILT_KERNEL := device/viewsonic/n710/kernel
 # Required for CWM
 BOARD_HAS_NO_SELECT_BUTTON := true
 
-
 # SELINUX Defines
+HAVE_SELINUX := false
+
 BOARD_SEPOLICY_DIRS := \
     device/viewsonic/n710/selinux
 

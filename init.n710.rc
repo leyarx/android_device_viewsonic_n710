@@ -151,6 +151,11 @@ on boot
     insmod /system/lib/modules/compat/mac80211.ko
     insmod /system/lib/modules/compat/wl12xx.ko debug_level=0x63c00
 
+    mkdir /data/gps/ 0770 gps gps
+    chmod 0771 /data/gps/
+    chown gps gps /data/gps/
+    chmod 0666 /dev/tigps	
+	
 service akmd /system/bin/akmd8975_service -m 1
     disabled
     user akmd
@@ -303,5 +308,6 @@ on property:persist.wlan.ti.calibrated=0
 service navl_server /system/bin/navd --android_log NAVD  -p3 -nav\"-c/system/etc/gps/config/pathconfigfile.txt\"
     disabled
     class main
-    user root
+    user gps
+    group system
     oneshot

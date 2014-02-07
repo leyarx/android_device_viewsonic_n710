@@ -20,10 +20,6 @@
 <!-- These resources are around just to allow their values to be customized
      for different hardware and product builds. -->
 <resources>
-    <string name="config_datause_iface" translatable="false">wlan0</string>
-
-    <bool name="config_batterySdCardAccessibility">true</bool>
-
     <bool name="config_allowAllRotations">true</bool>
 
     <string-array name="config_locationProviderPackageNames" translatable="false">
@@ -32,10 +28,10 @@
     </string-array>
 
    <string-array translatable="false" name="networkAttributes">
-        <item>"wifi,1,1,2,-1,true"</item>
-        <item>"bluetooth,7,7,0,-1,true"</item>
+        <item>"wifi,1,1,1,-1,true"</item>
+        <item>"bluetooth,7,7,3,-1,true"</item>
         <item>"wifi_p2p,13,1,0,-1,true"</item>
-        <item>"ethernet,9,9,9,-1,true"</item>
+        <item>"ethernet,9,9,0,-1,true"</item>
     </string-array>
 
    <string-array translatable="false" name="radioAttributes">
@@ -50,6 +46,14 @@
     <string-array translatable="false" name="config_tether_usb_regexs">
         <item>"rndis0"</item>
     </string-array>
+
+    <!-- Array of allowable ConnectivityManager network types for tethering -->
+     <integer-array translatable="false" name="config_tether_upstream_types">
+         <item>0</item>
+         <item>1</item>
+         <item>5</item>
+         <item>7</item>
+    </integer-array>
 
     <!-- List of regexpressions describing the interface (if any) that represent tetherable
          Wifi interfaces.  If the device doesn't want to support tethering over Wifi this
@@ -215,9 +219,6 @@
 
     <!-- Set to true to add links to Cell Broadcast app from Settings and MMS app. -->
     <bool name="config_cellBroadcastAppLinks">false</bool>
-
-    <!-- Device supports LED flashlight -->
-    <bool name="config_enableTorch">false</bool>
 
     <!-- Defines the system property to set for performance profile xe: sys.cpu.modes. Leave it
          blank if the device do not support performance profiles -->

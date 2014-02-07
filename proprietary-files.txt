@@ -1,17 +1,21 @@
 # TI(Bluetooth GPS)
 bin/uim-sysfs
+vendor/lib/libbt-vendor.so
 
 # RIL stuff
-#bin/rild
+bin/rild
+lib/usiuna-ril.so
 
 # Wifi stuff
-#bin/hciconfig
+bin/iw
+bin/hciconfig
 #bin/calibrator
 bin/convert_mac.sh
 bin/wifi_cal_conv_mac.sh
 etc/wifi/wpa_supplicant.conf
 etc/wifi/p2p_supplicant.conf
 etc/wifi/hostapd.conf
+lib/libnl.so
 
 # Sensors
 bin/akmd8975_service
@@ -27,10 +31,16 @@ lib/libsensors.isl29028.so
 
 # Audio
 etc/asound.conf
-lib/hw/audio.primary.tegra.so
-lib/hw/audio_policy.tegra.so
+etc/enctune.conf
+#etc/nvaudio_conf.xml
+#lib/hw/audio.primary.tegra.so
+#lib/hw/audio_policy.tegra.so
 lib/hw/audio.usb.default.so
-lib/libaudioavp.so
+#lib/libaudioavp.so
+
+#lib/libaudioutils.so
+#lib/libtinyalsa.so
+
 usr/share/alsa/alsa.conf
 usr/share/alsa/cards/aliases.conf
 usr/share/alsa/pcm/center_lfe.conf

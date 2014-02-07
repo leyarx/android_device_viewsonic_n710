@@ -17,8 +17,9 @@
 
 # Audio Options
 BOARD_USES_GENERIC_AUDIO := false
-BOARD_USES_ALSA_AUDIO := true
-BOARD_SUPPORT_NVOICE := true
+BOARD_USES_ALSA_AUDIO := false
+#BOARD_SUPPORT_NVOICE := true
+COMMON_GLOBAL_CFLAGS += -DICS_AUDIO_BLOB
 
 # inherit from the proprietary version
 -include vendor/viewsonic/n710/BoardConfigVendor.mk
@@ -104,9 +105,10 @@ endif
 
 # BT
 BOARD_HAVE_BLUETOOTH := true
+#BOARD_WPAN_DEVICE := true
 BOARD_HAVE_BLUETOOTH_TI := true
-BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/viewsonic/n710/bluetooth
-BOARD_BLUETOOTH_DEFAULT_NAME := $(PRODUCT_MODEL)
+#BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/viewsonic/n710/bluetooth
+#BOARD_BLUETOOTH_DEFAULT_NAME := $(PRODUCT_MODEL)
 
 # Sensors invensense
 BOARD_USES_GENERIC_INVENSENSE := false

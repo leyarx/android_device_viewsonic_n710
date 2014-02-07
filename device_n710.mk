@@ -20,6 +20,10 @@ PRODUCT_COPY_FILES += \
     device/viewsonic/n710/init.n710.rc:root/init.n710.rc \
     device/viewsonic/n710/init.nv_dev_board.usb.rc:root/init.nv_dev_board.usb.rc
 
+# Vold.fstab
+PRODUCT_COPY_FILES += \
+	$(LOCAL_PATH)/prebuilt/etc/vold.fstab:system/etc/vold.fstab	
+	
 PRODUCT_COPY_FILES += \
 	$(LOCAL_PATH)/prebuilt/lib/modules/baseband_usb_chr.ko:/system/lib/modules/baseband_usb_chr.ko \
 	$(LOCAL_PATH)/prebuilt/lib/modules/baseband-xmm-power2.ko:/system/lib/modules/baseband-xmm-power2.ko \

@@ -7,7 +7,10 @@ on init
     # for backwards compatibility
     mkdir /mnt/shell/emulated 0700 shell shell
     mkdir /storage/emulated 0555 root root
-    mkdir /storage 0550 system sdcard_r
+#    mkdir /storage 0550 system sdcard_r
+    mkdir /storage/sdcard1 0555 root root
+	
+    export SECONDARY_STORAGE /storage/sdcard1	
     export EXTERNAL_STORAGE /storage/emulated/legacy
     export EMULATED_STORAGE_SOURCE /mnt/shell/emulated
     export EMULATED_STORAGE_TARGET /storage/emulated
@@ -19,12 +22,16 @@ on init
     symlink /mnt/shell/emulated/0 /storage/emulated/legacy
 
     # Enable secondary storage
-    export SECONDARY_STORAGE /storage/sdcard1
+#    export SECONDARY_STORAGE /storage/sdcard1
  
     # make the pathes for the external media mounts
-    mkdir /storage/sdcard1 0000 system system
+#    mkdir /storage/sdcard1 0000 system system
 
     mkdir /forever 0644 system system
+
+    # create directory for mounting usb drives
+    mkdir /storage/usbdisk0 0666 system system
+    mkdir /storage/usbdisk1 0666 system system
 	
 on fs
     setprop ro.crypto.tmpfs_options size=128m,mode=0771,uid=1000,gid=1000
@@ -35,7 +42,8 @@ on fs
     mount ext4 /dev/block/platform/sdhci-tegra.3/by-name/APP /system rw
     # Create NVSI filter symlink
     symlink /data/data/com.nvidia.NvCPLSvc/files/com.nvidia.nvsiutilv1.xml /system/etc/permissions/com.nvidia.nvsiutilv1.xml
-    mount_all /fstab.n710
+    chmod 0755 /system/etc/permissions/com.nvidia.nvsiutilv1.xml
+	mount_all /fstab.n710
 
 on post-fs-data
     mkdir /data/misc/wifi 0770 wifi wifi
@@ -55,7 +63,7 @@ on post-fs-data
 
     # we will remap this as /mnt/sdcard with the sdcard fuse tool
     mkdir /data/media 0770 media_rw media_rw
-    chown media_rw media_rw /data/media
+ #   chown media_rw media_rw /data/media
 
     # Set indication (checked by vold) that we have finished this action
     setprop vold.post_fs_data_done 1
@@ -69,6 +77,10 @@ on post-fs-data
     mkdir /forever/addon 0770 system system
     mount ext4 /dev/block/platform/sdhci-tegra.3/by-name/UDB /forever/addon rw
     chown system system /forever/addon
+
+	symlink /system/xbin/busybox /system/bin/busybox
+	symlink /system/lib/hw/sensors.qc750.so /system/lib/hw/sensors.n710.so
+	symlink /system/lib/hw/lights.qc750.so /system/lib/hw/lights.n710.so
 	
 on boot	
 
@@ -136,10 +148,12 @@ on boot
     chown system system /sys/devices/system/cpu/cpufreq/interactive/max_boost
 
 # Default Read Ahead value for sdcards
-    write /sys/block/mmcblk0/bdi/read_ahead_kb 4096
-    write /sys/block/mmcblk1/bdi/read_ahead_kb 4096
-    write /sys/block/mmcblk0/queue/read_ahead_kb 4096
-    write /sys/block/mmcblk1/queue/read_ahead_kb 4096
+    write /sys/block/mmcblk0/queue/read_ahead_kb 2048
+    write /sys/block/mmcblk1/queue/read_ahead_kb 2048
+#    write /sys/block/mmcblk0/bdi/read_ahead_kb 4096
+#    write /sys/block/mmcblk1/bdi/read_ahead_kb 4096
+#    write /sys/block/mmcblk0/queue/read_ahead_kb 4096
+#    write /sys/block/mmcblk1/queue/read_ahead_kb 4096
 
 # Wiimote connect status
     write /data/misc/wminput/connected 0
@@ -155,6 +169,10 @@ on boot
     chmod 0771 /data/gps/
     chown gps gps /data/gps/
     chmod 0666 /dev/tigps	
+
+on property:ro.debuggable=1
+    # EMC debug interface
+    chmod 666 /sys/kernel/debug/tegra_emc/eack_state
 	
 service akmd /system/bin/akmd8975_service -m 1
     disabled
@@ -219,6 +237,11 @@ service dhcpcd_bnep0 /system/bin/dhcpcd -ABKL
     disabled
     oneshot
 
+service dhcpcd_bt-pan /system/bin/dhcpcd -ABKL
+    class main
+    disabled
+    oneshot	
+	
 service iprenew_wlan0 /system/bin/dhcpcd -n
     class main
     disabled
@@ -234,6 +257,11 @@ service iprenew_eth0 /system/bin/dhcpcd -n
     disabled
     oneshot
 
+service iprenew_bt-pan /system/bin/dhcpcd -n
+    class main
+    disabled
+    oneshot	
+	
 service hostapd_bin  /system/bin/hostapd -dd /data/misc/wifi/hostapd.conf
     socket wpa_wlan1 dgram 660 wifi wifi
     disabled
@@ -247,19 +275,34 @@ on property:wlan.driver.status=ok
 # underlying files in /data/media wil be created with user and group media_rw (1023)
 service sdcard /system/bin/sdcard /data/media /mnt/shell/emulated 1023 1023
     class late_start
+
+# bugreport is triggered by the VOLUME-DOWN and VOLUME-UP keys
+service bugreport /system/bin/dumpstate -d -v -o /data/storage/bugreports/bugreport
+    class main
+    disabled
+    oneshot
+    keycodes 115 114
 	
 # Prepare TF service
+# start tf_daemon service
 service tf_daemon /system/bin/tf_daemon -storageDir /data/tf -d
-    disabled
     class main
     user root
     group shell
-    oneshot
 
-# Create data directory and start service
-on property:tf.enable=y
+# may restart due to /data/tf not existing yet
+on property:init.svc.tf_daemon=restarting
     mkdir /data/tf
-    start tf_daemon
+
+# create filesystems if necessary
+service setup_fs /system/bin/setup_fs \
+        /dev/block/platform/sdhci-tegra.3/by-name/UDA \
+        /dev/block/platform/sdhci-tegra.3/by-name/CAC \
+        /dev/block/platform/sdhci-tegra.3/by-name/UDD
+    class core
+    user root
+    group root
+    oneshot
 	
 service add_p2p_iface /system/bin/iw phy0 interface add p2p0 type managed
     disabled

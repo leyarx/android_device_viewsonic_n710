@@ -18,4 +18,4 @@
 #/devices/platform/tegra-ehci				/storage/usbdisk    vfat      defaults          voldmanaged=usbdisk:auto
 
 # VOLD mount points
-/dev/block/platform/sdhci-tegra.0/mmcblk1p1 /storage/sdcard1 auto defaults voldmanaged=sdcard1:auto
+#/dev/block/platform/sdhci-tegra.0/mmcblk1p1 /storage/sdcard1 auto defaults voldmanaged=sdcard1:auto
